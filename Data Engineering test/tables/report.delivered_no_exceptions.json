@@ -1,0 +1,28 @@
+{
+    "query": {
+        "L": [
+            {
+                "M": {
+                    "from": {
+                        "S": "report.delivered_new_pk d left join base.games g on d.game_id = g.game_id left join report.exp_access_rules a on d.org = a.org and g.location_id = coalesce(a.location, g.location_id) and cast(left(d.game_date,4) as integer)=coalesce(a.season, cast(left(d.game_date,4) as integer)) and a.level = coalesce(a.level, d.level) and g.home_team_id = coalesce(a.team, g.home_team_id)"
+                    },
+                    "group_by": {
+                        "S": "d.orggame, d.game_reference, d.game_id, d.org, a.org, g.location_id, d.level, g.game_type, d.game_date, a.exception, a.access_start, a.access_end, d.delivered, d.most_recent_file"
+                    },
+                    "select": {
+                        "S": "d.orggame, a.org, d.game_id, g.location_id, d.level, g.game_type, d.game_date, d.game_reference, a.access_start, a.access_end, a.exception, d.delivered, d.most_recent_file, getdate() as date_processed"
+                    },
+                    "where": {
+                        "S": "a.season = 2019 and (d.game_date+1 > a.access_start or a.access_start is null) and (d.game_date-1 < a.access_end or a.access_end is null) and a.exception = false"
+                    }
+                }
+            }
+        ]
+    },
+    "schema": {
+        "S": "report"
+    },
+    "table": {
+        "S": "delivered_no_exceptions"
+    }
+}

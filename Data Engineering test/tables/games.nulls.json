@@ -1,0 +1,25 @@
+{
+    "query": {
+        "L": [
+            {
+                "M": {
+                    "from": {
+                        "S": "crosscheck.tags t"
+                    },
+                    "group_by": {
+                        "S": "t.game_id"
+                    },
+                    "select": {
+                        "S": "t.game_id, SUM(CASE WHEN t.situation_pitcher IS NULL THEN 1 ELSE 0 END) as pitcher_nulls, SUM(CASE WHEN t.situation_batter IS NULL THEN 1 ELSE 0 END) as batter_nulls, getdate() as date_processed"
+                    }
+                }
+            }
+        ]
+    },
+    "schema": {
+        "S": "games"
+    },
+    "table": {
+        "S": "nulls"
+    }
+}

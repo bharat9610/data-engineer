@@ -1,0 +1,22 @@
+{
+    "query": {
+        "L": [
+            {
+                "M": {
+                    "from": {
+                        "S": "scout.tags st inner join base.measurements bm on bm.measurement_id = st.measurement_id and st.removed = 0 inner join base.games bg on bg.game_id = st.game_id and left(bg.game_reference, 4) in (2015,2016,2017,2018) and bg.application_type <> 3 and st.result_pitch_result <> 2 and bg.is_data_verified = 1 and bg.game_type in (1,2,3,4,5,6,7,14,19,30,61)"
+                    },
+                    "select": {
+                        "S": "st.measurement_id, cast(left(bg.game_reference,4) as int) as yr, st.situation_pitcher, ntile (4) over (partition by st.situation_pitcher, left(bg.game_reference,4) order by bm.pitch_release_speed) as quartile, scout.mps_to_mph(bm.pitch_release_speed) as RelSpeed, getdate() as date_processed"
+                    }
+                }
+            }
+        ]
+    },
+    "schema": {
+        "S": "report"
+    },
+    "table": {
+        "S": "hardball_pitchers"
+    }
+}

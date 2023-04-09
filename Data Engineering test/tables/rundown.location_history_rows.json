@@ -1,0 +1,21 @@
+{
+    "query": {
+        "M": {
+            "from": {
+                "S": "rundown.locations"
+            },
+            "select": {
+                "S": "location_id, oem_version, software_version, radar_serial, radar_model, radar_configuration, radar_measurement_mode, date_processed as start_date, dense_rank() over (order by oem_version+software_version+cast(radar_serial as varchar(15))+radar_model+radar_configuration+radar_measurement_mode) as combo_id, row_number() over (partition by location_id order by date_processed) as row_num, getdate() as date_processed"
+            },
+            "where": {
+                "S": "radar_serial <> 999983 and radar_model <> 'TMX3X' and software_version <> '' and oem_version <> '' and radar_serial is not NULL and radar_model <> '' and radar_configuration <> '' and radar_measurement_mode <> ''"
+            }
+        }
+    },
+    "schema": {
+        "S": "rundown"
+    },
+    "table": {
+        "S": "location_history_rows"
+    }
+}

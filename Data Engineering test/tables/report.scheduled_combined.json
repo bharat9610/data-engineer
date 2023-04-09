@@ -1,0 +1,25 @@
+{
+    "query": {
+        "L": [
+            {
+                "M": {
+                    "from": {
+                        "S": "report.scheduled_no_exceptions n left join report.scheduled_exceptions e on n.orggame = e.orggame"
+                    },
+                    "select": {
+                        "S": "n.orggame, n.org, n.game_id, n.location_id, n.level, n.game_date, n.game_reference, n.home_team_name, n.access_start, n.access_end, n.exception, n.game_state, getdate() as date_processed"
+                    },
+                    "where": {
+                        "S": " e.orggame is null"
+                    }
+                }
+            }
+        ]
+    },
+    "schema": {
+        "S": "report"
+    },
+    "table": {
+        "S": "scheduled_combined"
+    }
+}

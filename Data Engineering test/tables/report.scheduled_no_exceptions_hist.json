@@ -1,0 +1,28 @@
+{
+    "query": {
+        "L": [
+            {
+                "M": {
+                    "from": {
+                        "S": "report.schedule_new_level s left join games.metadata g on s.game_id = g.game_id left join report.exp_access_rules_hist a on (a.level is null or a.level = s.level_name) and (a.location is null or s.location_id = a.location) and (a.team is null or s.home_team_id = a.team)"
+                    },
+                    "group_by": {
+                        "S": "a.org, s.game_id, g.game_reference, s.location_id, a.location, s.level_name, a.level, s.local_time_string, a.exception, a.access_start, a.access_end, s.game_state, s.home_team_name, a.rule_start_time, a.end_date, a.rule_end_time"
+                    },
+                    "select": {
+                        "S": "concat(a.org, s.game_id) as orggame, a.org, s.game_id, coalesce(a.location, s.location_id) as location_id, coalesce(a.level, s.level_name) as level, s.local_time_string, g.game_reference, a.access_start, a.access_end, a.exception, s.game_state, s.home_team_name, a.rule_start_time, a.end_date, a.rule_end_time, getdate() as date_processed"
+                    },
+                    "where": {
+                        "S": "a.season = 2019 and s.local_time_string like '2019%' and (s.local_time_string > a.rule_start_time or left(local_time_string, 10) = left(a.rule_start_time, 10)) and (s.local_time_string < a.rule_end_time or s.local_time_string = a.rule_end_time) and (s.local_time_string > a.access_start or a.access_start is null) and (s.local_time_string < a.access_end or a.access_end is null) and a.exception = false"
+                    }
+                }
+            }
+        ]
+    },
+    "schema": {
+        "S": "report"
+    },
+    "table": {
+        "S": "scheduled_no_exceptions_hist"
+    }
+}

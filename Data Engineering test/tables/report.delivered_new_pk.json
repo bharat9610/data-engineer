@@ -1,0 +1,25 @@
+{
+    "query": {
+        "L": [
+            {
+                "M": {
+                    "from": {
+                        "S": "broadcast.delivered_games n"
+                    },
+                    "select": {
+                        "S": "concat(n.organization, n.game_id) as orggame, n.game_reference, n.most_recent_file, n.game_id, n.organization, n.delivered, n.last_modified, n.game_date, n.level, getdate() as date_processed"
+                    },
+                    "where": {
+                        "S": "n.game_date like '2019%'"
+                    }
+                }
+            }
+        ]
+    },
+    "schema": {
+        "S": "report"
+    },
+    "table": {
+        "S": "delivered_new_pk"
+    }
+}

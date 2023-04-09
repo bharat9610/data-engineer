@@ -1,0 +1,32 @@
+{
+    "query": {
+        "L": [
+            {
+                "M": {
+                    "aggregate": {
+                        "L": [
+                            {
+                                "S": "t.game_id"
+                            }
+                        ]
+                    },
+                    "from": {
+                        "S": "merged.measurement m inner join merged.live_pitch_data l on m.measurementid = l.measurementid inner join merged.batting_launch_data b on m.measurementid = b.measurementid inner join crosscheck.tags t on t.measurement_id = m.measurementid"
+                    },
+                    "group_by": {
+                        "S": "t.game_id"
+                    },
+                    "select": {
+                        "S": "t.game_id,count(m.measurementid),SUM(CASE WHEN l.releasedata_releasespeed_value > 0 AND m.pitchsegment_launchdata_releasespeed_value > 0 THEN 1 ELSE 0 END) AS live_final_valid_pitches,2.23694*AVG(l.releasedata_releasespeed_value - m.pitchsegment_launchdata_releasespeed_value) AS live_final_relspeed_avg,2.23694*SUM(l.releasedata_releasespeed_value - m.pitchsegment_launchdata_releasespeed_value) AS live_final_relspeed_sum,SUM(CASE WHEN ABS(l.releasedata_releasespeed_value - m.pitchsegment_launchdata_releasespeed_value) > 0.89407851797 THEN 1 ELSE 0 END) AS live_final_relspeed_delta_2_count,SUM(CASE WHEN ABS(l.releasedata_releasespeed_value - m.pitchsegment_launchdata_releasespeed_value) > 1.34111777696 THEN 1 ELSE 0 END) AS live_final_relspeed_delta_3_count,39.3701*AVG(l.trajectorydata_scoringheight_value - m.pitchsegment_balltrajectory_scoringheight_value) AS live_final_plh_avg,39.3701*SUM(l.trajectorydata_scoringheight_value - m.pitchsegment_balltrajectory_scoringheight_value) AS live_final_plh_sum,SUM(CASE WHEN ABS(l.trajectorydata_scoringheight_value - m.pitchsegment_balltrajectory_scoringheight_value) > 0.05079997256 THEN 1 ELSE 0 END) AS live_final_plh_delta_2_count,39.3701*AVG(l.trajectorydata_scoringside_value - m.pitchsegment_balltrajectory_scoringside_value) AS live_final_pls_avg,39.3701*SUM(l.trajectorydata_scoringside_value - m.pitchsegment_balltrajectory_scoringside_value) AS live_final_pls_sum,SUM(CASE WHEN ABS(l.trajectorydata_scoringside_value - m.pitchsegment_balltrajectory_scoringside_value) > 0.05079997256 THEN 1 ELSE 0 END) AS live_final_pls_delta_2_count,SUM(CASE WHEN b.ballspeed_value > 0 AND m.battingsegment_launchdata_ballspeed_value> 0 THEN 1 ELSE 0 END) AS live_final_valid_hits,2.23694*AVG(b.ballspeed_value - m.battingsegment_launchdata_ballspeed_value) AS live_final_exitspeed_avg,2.23694*SUM(b.ballspeed_value - m.battingsegment_launchdata_ballspeed_value) AS live_final_exitspeed_sum,SUM(CASE WHEN ABS(b.ballspeed_value - m.battingsegment_launchdata_ballspeed_value) > 0.89407851797 THEN 1 ELSE 0 END) AS live_final_exitspeed_delta_2_count,SUM(CASE WHEN ABS(b.ballspeed_value - m.battingsegment_launchdata_ballspeed_value) > 1.34111777696 THEN 1 ELSE 0 END) AS live_final_exitpeed_delta_3_count,SUM(cast(m.visionenhanced as int)) AS optical_capture_count, getdate() as date_processed"
+                    }
+                }
+            }
+        ]
+    },
+    "schema": {
+        "S": "games"
+    },
+    "table": {
+        "S": "live_final"
+    }
+}

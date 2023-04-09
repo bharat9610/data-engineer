@@ -1,0 +1,25 @@
+{
+    "query": {
+        "L": [
+            {
+                "M": {
+                    "from": {
+                        "S": "dict.team_org dto inner join scout.teams te1 on te1.team_id = dto.team inner join scout.teams te2 on te2.team_id = dto.org"
+                    },
+                    "select": {
+                        "S": "distinct te1.team_id as team_id, te1.name as team_name, te2.name as org_name, dto.level, getdate() as date_processed"
+                    },
+                    "where": {
+                        "S": "dto.season = 2018 and dto.level IN (1,2,3,4,5,6,7)"
+                    }
+                }
+            }
+        ]
+    },
+    "schema": {
+        "S": "report"
+    },
+    "table": {
+        "S": "mlb_orgs"
+    }
+}

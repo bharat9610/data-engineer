@@ -1,0 +1,32 @@
+{
+    "query": {
+        "L": [
+            {
+                "M": {
+                    "aggregate": {
+                        "L": [
+                            {
+                                "S": "t.game_id"
+                            }
+                        ]
+                    },
+                    "from": {
+                        "S": "radar.measurement f inner join radar.live_pitch_data l on f.measurementid = l.measurementid inner join crosscheck.tags t on f.measurementid = t.measurement_id"
+                    },
+                    "group_by": {
+                        "S": "t.game_id"
+                    },
+                    "select": {
+                        "S": "t.game_id,SUM(CASE WHEN l.releasedata_releasespeed_value > 0 AND f.pitchsegment_launchdata_releasespeed_value > 0 THEN 1 ELSE 0 END) AS radar_valid_pitches,2.23694*AVG(l.releasedata_releasespeed_value - f.pitchsegment_launchdata_releasespeed_value) AS relspeed_radar_livefinal_delta_avg,2.23694*SUM(l.releasedata_releasespeed_value - f.pitchsegment_launchdata_releasespeed_value) AS relspeed_radar_livefinal_delta_sum,39.3701*AVG(l.trajectorydata_scoringheight_value - f.pitchsegment_balltrajectory_scoringheight_value) AS plh_radar_livefinal_delta_avg,39.3701*SUM(l.trajectorydata_scoringheight_value - f.pitchsegment_balltrajectory_scoringheight_value) AS plh_radar_livefinal_delta_sum,39.3701*AVG(l.trajectorydata_scoringside_value - f.pitchsegment_balltrajectory_scoringside_value) AS pls_radar_livefinal_delta_avg,39.3701* SUM(l.trajectorydata_scoringside_value - f.pitchsegment_balltrajectory_scoringside_value) AS pls_radar_livefinal_delta_sum, getdate() as date_processed"
+                    }
+                }
+            }
+        ]
+    },
+    "schema": {
+        "S": "games"
+    },
+    "table": {
+        "S": "oem"
+    }
+}

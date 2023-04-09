@@ -1,0 +1,35 @@
+{
+    "query": {
+        "L": [
+            {
+                "M": {
+                    "aggregate": {
+                        "L": [
+                            {
+                                "S": "t.game_id"
+                            },
+                            {
+                                "S": "m.game_id"
+                            }
+                        ]
+                    },
+                    "from": {
+                        "S": "advance.merged_measurement m left join sdkjson.live_pitch_data l on m.measurementid = l.measurementid left join sdkjson.measurement json_m on m.measurementid = json_m.measurementid inner join crosscheck.tags t on t.measurement_id = m.measurementid"
+                    },
+                    "group_by": {
+                        "S": "t.game_id, coalesce(m.visionenhanced,FALSE)"
+                    },
+                    "select": {
+                        "S": "distinct t.game_id, count(m.measurementid), SUM(CASE WHEN l.sdkuploadermetadata_receivedtime > DATEADD(microsec, CAST(SUBSTRING(CAST(json_m.pitchsegment_trajectorydata_zonetime as varchar), 3, 6) as integer), l.time) THEN 1 ELSE 0 END), coalesce(m.visionenhanced,FALSE), AVG(NULLIF(1000.0*CASE WHEN l.sdkuploadermetadata_receivedtime > DATEADD(microsec, CAST(SUBSTRING(CAST(json_m.pitchsegment_trajectorydata_zonetime as varchar), 3, 6) as integer), l.time) THEN (CASE WHEN date_part(sec, l.sdkuploadermetadata_receivedtime) - (date_part(sec, l.time ) + json_m.pitchsegment_trajectorydata_zonetime) < 0 THEN 60 + date_part(sec, l.sdkuploadermetadata_receivedtime) - (date_part(sec, l.time ) + json_m.pitchsegment_trajectorydata_zonetime) ELSE date_part(sec, l.sdkuploadermetadata_receivedtime) - (date_part(sec, l.time) + json_m.pitchsegment_trajectorydata_zonetime) END) ELSE NULL END, 0)), SUM(NULLIF(1000.0*CASE WHEN l.sdkuploadermetadata_receivedtime > DATEADD(microsec, CAST(SUBSTRING(CAST(json_m.pitchsegment_trajectorydata_zonetime as varchar), 3, 6) as integer), l.time) THEN (CASE WHEN date_part(sec, l.sdkuploadermetadata_receivedtime) - (date_part(sec, l.time ) + json_m.pitchsegment_trajectorydata_zonetime) < 0 THEN 60 + date_part(sec, l.sdkuploadermetadata_receivedtime) - (date_part(sec, l.time ) + json_m.pitchsegment_trajectorydata_zonetime) ELSE date_part(sec, l.sdkuploadermetadata_receivedtime) - (date_part(sec, l.time) + json_m.pitchsegment_trajectorydata_zonetime) END) ELSE NULL END, 0)), getdate() as date_processed"
+                    }
+                }
+            }
+        ]
+    },
+    "schema": {
+        "S": "games"
+    },
+    "table": {
+        "S": "latency"
+    }
+}

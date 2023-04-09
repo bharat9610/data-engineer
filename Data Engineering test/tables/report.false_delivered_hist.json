@@ -1,0 +1,25 @@
+{
+    "query": {
+        "L": [
+            {
+                "M": {
+                    "from": {
+                        "S": "report.delivered_new_pk n left join report.delivered_combined_hist e on n.orggame = e.orggame"
+                    },
+                    "select": {
+                        "S": "n.orggame, n.game_reference, n.most_recent_file, n.game_id, n.org, n.delivered, n.last_modified, n.game_date, n.level, getdate() as date_processed"
+                    },
+                    "where": {
+                        "S": "n.game_date like '2019%' and e.orggame is null"
+                    }
+                }
+            }
+        ]
+    },
+    "schema": {
+        "S": "report"
+    },
+    "table": {
+        "S": "false_delivered_hist"
+    }
+}

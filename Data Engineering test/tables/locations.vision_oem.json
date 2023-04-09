@@ -1,0 +1,32 @@
+{
+    "query": {
+        "L": [
+            {
+                "M": {
+                    "aggregate": {
+                        "L": [
+                            {
+                                "S": "l.location_id"
+                            }
+                        ]
+                    },
+                    "from": {
+                        "S": "radar.measurement f_oem inner join radar.live_pitch_data l_oem on f_oem.measurementid = l_oem.measurementid inner join merged.measurement f_vis on f_oem.measurementid = f_vis.measurementid inner join vision.live_pitch_data l_vis on f_oem.measurementid = l_vis.measurementid inner join base.locations l on f_oem.locationid = l.location_id inner join crosscheck.tags t on f_oem.measurementid = t.measurement_id"
+                    },
+                    "group_by": {
+                        "S": "l.location_id, extract(year from t.measurement_time)"
+                    },
+                    "select": {
+                        "S": "l.location_id, extract(year from t.measurement_time) as season, 2.23694*STDDEV_POP((f_vis.pitchsegment_launchdata_releasespeed_value - f_oem.pitchsegment_launchdata_releasespeed_value)) AS relspeed_final_visionradar_delta_stdev, 39.3701*STDDEV_POP((f_vis.pitchsegment_balltrajectory_scoringheight_value - f_oem.pitchsegment_balltrajectory_scoringheight_value)) AS plh_final_visionradar_delta_stdev, 39.3701*STDDEV_POP((f_vis.pitchsegment_balltrajectory_scoringside_value - f_oem.pitchsegment_balltrajectory_scoringside_value)) AS pls_final_visionradar_delta_stdev, 57.2958*STDDEV_POP((f_vis.pitchsegment_launchdata_releaseverticalangle_value - f_oem.pitchsegment_launchdata_releaseverticalangle_value)) AS vertreleaseangle_final_visionradar_delta_stdev, 57.2958*STDDEV_POP((f_vis.pitchsegment_launchdata_releasehorizontalangle_value - f_oem.pitchsegment_launchdata_releasehorizontalangle_value)) AS horzreleaseangle_final_visionradar_delta_stdev, 57.2958*STDDEV_POP((f_vis.pitchsegment_launchdata_spinaxis_value - f_oem.pitchsegment_launchdata_spinaxis_value)) AS spinaxis_final_visionradar_delta_stdev, 39.3701*STDDEV_POP((f_vis.pitchsegment_launchdata_releaseheight_value - f_oem.pitchsegment_launchdata_releaseheight_value)) AS relheight_final_visionradar_delta_stdev, 39.3701*STDDEV_POP((f_vis.pitchsegment_launchdata_releaseside_value - f_oem.pitchsegment_launchdata_releaseside_value)) AS relside_final_visionradar_delta_stdev, 39.3701*STDDEV_POP((f_vis.pitchsegment_launchdata_extension_value - f_oem.pitchsegment_launchdata_extension_value)) AS extension_final_visionradar_delta_stdev, 39.3701*STDDEV_POP((f_vis.pitchsegment_balltrajectory_breakvertical_value - f_oem.pitchsegment_balltrajectory_breakvertical_value)) AS vertbreak_final_visionradar_delta_stdev, 39.3701*STDDEV_POP((f_vis.pitchsegment_balltrajectory_inducedbreakvertical_value - f_oem.pitchsegment_balltrajectory_inducedbreakvertical_value)) AS inducedvertbreak_final_visionradar_delta_stdev, 39.3701*STDDEV_POP((f_vis.pitchsegment_balltrajectory_breakhorizontal_value - f_oem.pitchsegment_balltrajectory_breakhorizontal_value)) AS horzbreak_final_visionradar_delta_stdev, 2.23694*STDDEV_POP((f_vis.pitchsegment_balltrajectory_scoringspeed_value - f_oem.pitchsegment_balltrajectory_scoringspeed_value)) AS zonespeed_final_visionradar_delta_stdev, 57.2958*STDDEV_POP((f_vis.pitchsegment_balltrajectory_approachanglevertical_value - f_oem.pitchsegment_balltrajectory_approachanglevertical_value)) AS vertapproachangle_final_visionradar_delta_stdev, 57.2958*STDDEV_POP((f_vis.pitchsegment_balltrajectory_approachanglehorizontal_value - f_oem.pitchsegment_balltrajectory_approachanglehorizontal_value)) AS horzapproachangle_final_visionradar_delta_stdev, STDDEV_POP(f_vis.pitchsegment_balltrajectory_scoringtime_value - f_oem.pitchsegment_balltrajectory_scoringtime_value) AS zonetime_final_visionradar_delta_stdev, 3.28084*STDDEV_POP((f_vis.pitchsegment_balltrajectory_pfxdata_x0_value_x - f_oem.pitchsegment_balltrajectory_pfxdata_x0_value_x)) AS x0x_final_visionradar_delta_stdev, 3.28084*STDDEV_POP((f_vis.pitchsegment_balltrajectory_pfxdata_x0_value_y - f_oem.pitchsegment_balltrajectory_pfxdata_x0_value_y)) AS x0y_final_visionradar_delta_stdev, 3.28084*STDDEV_POP((f_vis.pitchsegment_balltrajectory_pfxdata_x0_value_z - f_oem.pitchsegment_balltrajectory_pfxdata_x0_value_z)) AS x0z_final_visionradar_delta_stdev, 3.28084*STDDEV_POP((f_vis.pitchsegment_balltrajectory_pfxdata_v0_value_x - f_oem.pitchsegment_balltrajectory_pfxdata_v0_value_x)) AS v0x_final_visionradar_delta_stdev, 3.28084*STDDEV_POP((f_vis.pitchsegment_balltrajectory_pfxdata_v0_value_y - f_oem.pitchsegment_balltrajectory_pfxdata_v0_value_y)) AS v0y_final_visionradar_delta_stdev, 3.28084*STDDEV_POP((f_vis.pitchsegment_balltrajectory_pfxdata_v0_value_z - f_oem.pitchsegment_balltrajectory_pfxdata_v0_value_z)) AS v0z_final_visionradar_delta_stdev, 3.28084*STDDEV_POP((f_vis.pitchsegment_balltrajectory_pfxdata_a0_value_x - f_oem.pitchsegment_balltrajectory_pfxdata_a0_value_x)) AS a0x_final_visionradar_delta_stdev, 3.28084*STDDEV_POP((f_vis.pitchsegment_balltrajectory_pfxdata_a0_value_y - f_oem.pitchsegment_balltrajectory_pfxdata_a0_value_y)) AS a0y_final_visionradar_delta_stdev, 3.28084*STDDEV_POP((f_vis.pitchsegment_balltrajectory_pfxdata_a0_value_z - f_oem.pitchsegment_balltrajectory_pfxdata_a0_value_z)) AS a0z_final_visionradar_delta_stdev, 39.3701*STDDEV_POP((f_vis.pitchsegment_balltrajectory_pfxdata_pfxhorz_value - f_oem.pitchsegment_balltrajectory_pfxdata_pfxhorz_value)) AS pfxx_final_visionradar_delta_stdev, 39.3701*STDDEV_POP((f_vis.pitchsegment_balltrajectory_pfxdata_pfxvert_value - f_oem.pitchsegment_balltrajectory_pfxdata_pfxvert_value)) AS pfxz_final_visionradar_delta_stdev, getdate() as date_processed"
+                    }
+                }
+            }
+        ]
+    },
+    "schema": {
+        "S": "locations"
+    },
+    "table": {
+        "S": "vision_oem"
+    }
+}

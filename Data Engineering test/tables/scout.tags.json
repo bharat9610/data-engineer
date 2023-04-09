@@ -1,0 +1,22 @@
+{
+    "query": {
+        "L": [
+            {
+                "M": {
+                    "from": {
+                        "S": "base.tags t left join dict.player_dedup b on t.situation_batter = b.duped_player left join dict.player_dedup p on t.situation_pitcher = p.duped_player"
+                    },
+                    "select": {
+                        "S": "date_created, date_modified, game_id, is_valid, measurement_id, measurement_time, measurements_sn, note, removed, result_ball_flight, result_batter_dexterity, result_batter_walk_or_strikeout, result_hit_contact, result_hit_result, result_outs, result_pitch_result, result_pitch_type, result_pitch_type_auto, result_pitcher_dexterity, result_pitcher_set_type, result_runs, situation_balls, coalesce(b.master_player, situation_batter), situation_batting_team, situation_fielding_team, situation_inning, situation_outs, coalesce(p.master_player, situation_pitcher), situation_strikes, situation_total_pitches, tag_id, getdate() as date_processed"
+                    }
+                }
+            }
+        ]
+    },
+    "schema": {
+        "S": "scout"
+    },
+    "table": {
+        "S": "tags"
+    }
+}

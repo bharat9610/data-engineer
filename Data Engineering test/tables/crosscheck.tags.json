@@ -1,0 +1,25 @@
+{
+    "query": {
+        "L": [
+            {
+                "M": {
+                    "from": {
+                        "S": "scout.tags t inner join base.games g on t.game_id = g.game_id "
+                    },
+                    "select": {
+                        "S": "t.game_id, measurement_id, measurement_time, result_ball_flight, result_batter_dexterity, result_batter_walk_or_strikeout, result_hit_result, result_outs, result_pitch_result, result_pitch_type_auto, result_pitcher_dexterity, result_runs, situation_balls, situation_batter, situation_batting_team, situation_fielding_team, situation_inning, situation_outs, situation_pitcher, situation_strikes, tag_id, getdate() as date_processed"
+                    },
+                    "where": {
+                        "S": "t.removed = 0 and t.result_pitch_result <> 2 and g.application_type <> 3"
+                    }
+                }
+            }
+        ]
+    },
+    "schema": {
+        "S": "crosscheck"
+    },
+    "table": {
+        "S": "tags"
+    }
+}

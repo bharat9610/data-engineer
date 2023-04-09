@@ -1,0 +1,21 @@
+{
+    "query": {
+        "M": {
+            "from": {
+                "S": "base.locations INNER JOIN base.games g ON locations.location_id = g.location_id AND date_part(year, g.date_created) = 2018 AND g.is_data_verified = TRUE AND g.application_type <> 3 AND g.game_reference NOT LIKE '%-BP-%' INNER JOIN dict.game_type d ON d.game_type = g.game_type"
+            },
+            "group_by": {
+                "S": "locations.location_id, locations.name, g.game_type, d.game_type_string"
+            },
+            "select": {
+                "S": "locations.location_id, locations.name, g.game_type, d.game_type_string AS level, count(g.game_id) AS count, row_number() over (PARTITION BY locations.location_id ORDER BY count desc) as num, getdate() as date_processed"
+            }
+        }
+    },
+    "schema": {
+        "S": "report"
+    },
+    "table": {
+        "S": "verified_levels_18"
+    }
+}

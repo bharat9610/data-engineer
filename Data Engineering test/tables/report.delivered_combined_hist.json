@@ -1,0 +1,25 @@
+{
+    "query": {
+        "L": [
+            {
+                "M": {
+                    "from": {
+                        "S": "report.delivered_no_exceptions_hist n left join report.delivered_exceptions_hist e on n.orggame = e.orggame"
+                    },
+                    "select": {
+                        "S": "n.orggame, n.org, n.game_id, n.location_id, n.level, n.game_type, n.game_date, n.game_reference, n.access_start, n.access_end, n.exception, n.delivered, n.most_recent_file, n.rule_start_time, n.end_date, n.rule_end_time, getdate() as date_processed"
+                    },
+                    "where": {
+                        "S": " e.orggame is null"
+                    }
+                }
+            }
+        ]
+    },
+    "schema": {
+        "S": "report"
+    },
+    "table": {
+        "S": "delivered_combined_hist"
+    }
+}

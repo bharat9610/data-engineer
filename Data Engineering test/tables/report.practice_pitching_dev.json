@@ -1,0 +1,22 @@
+{
+    "query": {
+        "L": [
+            {
+                "M": {
+                    "from": {
+                        "S": "practice.plays_dev left join practice.games_dev on plays_dev.game_id = games_dev.id"
+                    },
+                    "select": {
+                        "S": "measurementid, mps_to_mph(measurement_pitch_release_speed) as Velo, m_to_in(measurement_pitch_trajectory_horizontalbreak) HorizBreak, m_to_in(measurement_pitch_trajectory_inducedverticalbreak) VertBreak, m_to_ft(measurement_pitch_location_height) LocationHeight, m_to_ft(measurement_pitch_location_side) LocationSide, m_to_ft(measurement_pitch_release_height) RelHeight, m_to_ft(measurement_pitch_release_side) RelSide, measurement_pitch_release_spinaxis SpinAxis, measurement_pitch_release_spinrate * 60 SpinRate, measurement_pitch_release_speed as Velo_Metric, measurement_pitch_trajectory_horizontalbreak as HorizBreak_Metric, measurement_pitch_trajectory_inducedverticalbreak as VertBreak_Metric, measurement_pitch_location_height as LocationHeight_Metric, measurement_pitch_location_side as LocationSide_Metric, measurement_pitch_release_height as RelHeight_Metric, measurement_pitch_release_side as RelSide_Metric, result_pitchtype, result_pitcher_id, result_pitcher_lastname, result_pitcher_firstname, plays_dev.locationid, games_dev.organization_name, cast(games_dev.local_time as datetime) as session_time, measurement_pitch_release_spinaxis Tilt, plays_dev.local_time as pitch_time, games_dev.id as session_id, games_dev.organization_id as org_id, games_dev.date_processed as upload_time, plays_dev.result_flag, plays_dev.result_pitcherset, plays_dev.iswarmup, getdate() as date_processed"
+                    }
+                }
+            }
+        ]
+    },
+    "schema": {
+        "S": "report"
+    },
+    "table": {
+        "S": "practice_pitching_dev"
+    }
+}

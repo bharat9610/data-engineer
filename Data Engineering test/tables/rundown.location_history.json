@@ -1,0 +1,18 @@
+{
+    "query": {
+        "M": {
+            "from": {
+                "S": "rundown.location_history_rows l inner join rundown.location_history_rows r on l.location_id = r.location_id and ((l.row_num = r.row_num + 1 and l.combo_id <> r.combo_id) or (l.row_num = 1 and r.row_num = 1))"
+            },
+            "select": {
+                "S": "l.combo_id, l.location_id, l.oem_version, l.software_version, l.radar_serial, l.radar_model, l.radar_configuration, l.radar_measurement_mode, l.start_date, coalesce(lead(l.start_date) over (partition by l.location_id order by l.location_id, l.start_date),getdate()+1) as end_date, getdate() as date_processed"
+            }
+        }
+    },
+    "schema": {
+        "S": "rundown"
+    },
+    "table": {
+        "S": "location_history"
+    }
+}

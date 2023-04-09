@@ -1,0 +1,22 @@
+{
+    "query": {
+        "L": [
+            {
+                "M": {
+                    "from": {
+                        "S": "base.calibration_maintenance cm INNER JOIN crosscheck.calibrations c ON cm.new_calibration_id = c.calibration_id INNER JOIN crosscheck.games g ON c.game_id = g.game_id"
+                    },
+                    "select": {
+                        "S": "cm.calibration_maintenance_id, cm.date_created, g.game_id, cm.triggered_by, cm.tilt, cm.roll, cm.pan, cm.home_pixel_x, cm.home_pixel_y, cm.home_pixel_confidence, cm.radar_image_id, cm.new_calibration_id, cm.current_calibration_id, cm.baseline_calibration_id, cm.strike_zone_change_y, cm.strike_zone_change_y - LAG(cm.strike_zone_change_y, 1) OVER (PARTITION BY g.game_id ORDER BY cm.date_created) AS strike_zone_change_y_delta, cm.strike_zone_change_x, cm.strike_zone_change_x - LAG(cm.strike_zone_change_x, 1) OVER (PARTITION BY g.game_id ORDER BY cm.date_created) AS strike_zone_change_x_delta, cm.home_pixel_edge_score, cm.home_pixel_edge_score_absolute, getdate() as date_processed"
+                    }
+                }
+            }
+        ]
+    },
+    "schema": {
+        "S": "crosscheck"
+    },
+    "table": {
+        "S": "calibration_maintenance"
+    }
+}

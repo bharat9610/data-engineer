@@ -1,0 +1,22 @@
+{
+    "query": {
+        "L": [
+            {
+                "M": {
+                    "from": {
+                        "S": "rundown.access_rules r left join broadcast.access_rules b on r._id = b._id and b.date_processed >= getdate()-1"
+                    },
+                    "select": {
+                        "S": "r._id, case when b._id is not null then True else False end, r.date_processed as start_date, dense_rank() over (order by r._id) as combo_id,  row_number() over (partition by r._id order by r.date_processed) as row_num, getdate() as date_processed"
+                    }
+                }
+            }
+        ]
+    },
+    "schema": {
+        "S": "rundown"
+    },
+    "table": {
+        "S": "access_rules_rows"
+    }
+}

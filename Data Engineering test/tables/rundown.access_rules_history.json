@@ -1,0 +1,22 @@
+{
+    "query": {
+        "L": [
+            {
+                "M": {
+                    "from": {
+                        "S": "rundown.access_rules_rows a inner join rundown.access_rules_rows b on a._id = b._id and ((a.row_num = b.row_num + 1 and a.combo_id <> b.combo_id) or (a.row_num = 1 and b.row_num = 1)) inner join broadcast.access_rules bar on a._id = bar._id"
+                    },
+                    "select": {
+                        "S": "a._id, bar.org, bar.location, bar.level, bar.season, bar.access_start, bar.access_end, bar.team, bar.away, bar.verified, bar.exception, a.active, case when b.active is null then True when a.row_num<>b.row_num then False else b.active end, a.start_date, coalesce(lead(a.start_date) over (partition by a._id order by a._id, a.start_date),getdate()+1) as end_date, getdate() as date_processed"
+                    }
+                }
+            }
+        ]
+    },
+    "schema": {
+        "S": "rundown"
+    },
+    "table": {
+        "S": "access_rules_history"
+    }
+}

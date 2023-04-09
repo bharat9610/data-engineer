@@ -1,0 +1,22 @@
+{
+    "query": {
+        "L": [
+            {
+                "M": {
+                    "from": {
+                        "S": "scout.tags st inner join base.measurements bm on bm.measurement_id = st.measurement_id and st.removed = 0 inner join base.games bg on bg.game_id = st.game_id and left(bg.game_reference,4) in (2017, 2018) and bg.is_data_verified = 1 and bg.application_type <> 3 and bg.game_type = 1 inner join base.players bp on bp.player_id = st.situation_batter left join base.players bpp on bpp.player_id = st.situation_pitcher inner join report.hardball_ref hr on hr.situation_pitcher = st.situation_pitcher and hr.year = 2017"
+                    },
+                    "select": {
+                        "S": "cast(left(bg.game_reference, 4) as int) as year, st.measurement_id, bpp.last_name || ', ' || bpp.first_name as Pitcher, st.situation_pitcher, bp.last_name || ', ' || bp.first_name as Batter, st.result_pitch_type as pt, st.result_pitch_type_auto as ptauto, st.result_batter_walk_or_strikeout as walkork, st.result_pitch_result as pitchcall, st.result_ball_flight as hittype, st.result_hit_result as hitresult, st.result_pitcher_dexterity as pitcher_hand, st.result_batter_dexterity as batter_hand, base.m_to_ft(bm.pitch_location_height) as PLH, base.m_to_ft(bm.pitch_location_side) as PLS, degrees(bm.pitch_horzontal_approach_angle) as hangle, degrees(bm.pitch_vertical_approach_angle) as vangle, base.m_to_ft(bm.pitch_release_height) as RelHeight, base.m_to_ft(bm.pitch_release_side) as RelSide, base.m_to_ft(bm.pitch_extension) as Ext, base.mps_to_mph(bm.pitch_release_speed) as RelSpeed, base.m_to_in(bm.pitch_induced_vertical_break) as IVB, base.m_to_in(bm.pitch_horizontal_break) as HB, base.mps_to_mph(bm.hit_exit_speed) as exitspeed, degrees(bm.hit_vertical_exit_angle) as angle, case when st.result_pitch_result = 4 then 1 end as SwStr, case when st.result_pitch_result in (4,5,7) then 1 end as swings, case when st.result_pitch_result = 7 and st.result_ball_flight = 1 then 1 end as gb, case when st.result_pitch_result = 7 and st.result_ball_flight = 4 then 1 end as pu, case when st.result_pitch_result = 7 and bm.hit_exit_speed > 40.234 then 1 end as over90, case when st.result_pitch_result = 7 and st.result_ball_flight <> 5 then 1 end as bip, case when scout.mps_to_mph(bm.pitch_release_speed) > hr.hardballspeed then 1 else 0 end as hardball, getdate() as date_processed"
+                    }
+                }
+            }
+        ]
+    },
+    "schema": {
+        "S": "trout"
+    },
+    "table": {
+        "S": "app_angle"
+    }
+}

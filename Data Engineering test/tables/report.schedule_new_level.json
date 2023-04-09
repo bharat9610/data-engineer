@@ -1,0 +1,25 @@
+{
+    "query": {
+        "L": [
+            {
+                "M": {
+                    "from": {
+                        "S": "lineup.schedule"
+                    },
+                    "select": {
+                        "S": "id, game_id, foreignid, local_time, local_time_string, time_zone, game_no, location_id, location_name, league_id, league_name, case when level_name = 'D1' then 'NCAA' when level_name = 'KoreaBaseballOrganization' then 'KBO' when level_name = 'NPM' then 'NPB Minors' else level_name end as level_name, home_team_id, home_team_name, home_team_foreignid, away_team_id, away_team_name, away_team_foreignid, game_state, getdate() as date_processed"
+                    },
+                    "where": {
+                        "S": "left(local_time_string, 4) = '2019'"
+                    }
+                }
+            }
+        ]
+    },
+    "schema": {
+        "S": "report"
+    },
+    "table": {
+        "S": "schedule_new_level"
+    }
+}

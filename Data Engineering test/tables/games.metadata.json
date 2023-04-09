@@ -1,0 +1,32 @@
+{
+    "query": {
+        "L": [
+            {
+                "M": {
+                    "aggregate": {
+                        "L": [
+                            {
+                                "S": "g.game_id"
+                            }
+                        ]
+                    },
+                    "from": {
+                        "S": "base.games g inner join base.locations l on g.location_id = l.location_id left join rundown.location_history h on g.location_id = h.location_id AND g.date_created BETWEEN h.start_date AND h.end_date and g.application_type <> 3 AND g.game_reference NOT LIKE '%-BP-%'"
+                    },
+                    "select": {
+                        "S": "g.game_id,g.game_reference,g.game_type,extract(year from g.date_created), g.is_data_verified,CASE WHEN g.game_type IN (1, 2, 3, 4, 5, 6, 7, 14, 19, 26, 30, 61, 90) AND g.is_data_verified = TRUE THEN true ELSE false END AS metadata_reliability, CASE WHEN ((g.game_type IN (8, 15, 17) OR  (g.game_type = 11 AND extract(month from g.date_created) not BETWEEN 2 and 3) OR (g.game_type = 12 AND extract(month from g.date_created) not BETWEEN 10 and 11)) and g.is_data_verified = FALSE) THEN TRUE else FALSE end as never_verified, CASE WHEN (g.game_type IN (1, 2, 3, 4, 5, 6, 7, 14, 19, 26, 30, 61, 90, 110) OR (g.game_type = 11 AND extract(month from g.date_created) BETWEEN 2 and 3) OR (g.game_type = 11 AND extract(month from g.date_created) BETWEEN 10 and 11)) AND g.is_data_verified = FALSE THEN true ELSE false END AS pending_verified, CASE WHEN (g.game_type IN (1, 2, 3, 4, 5, 6, 7, 14, 19, 26, 30, 61, 90, 110) OR (g.game_type = 11 AND extract(month from g.date_created) BETWEEN 2 and 3) OR (g.game_type = 11 AND extract(month from g.date_created) BETWEEN 10 and 11)) AND g.is_data_verified = TRUE THEN true ELSE false END AS verified_meaningful, l.location_id,l.name,h.software_version, h.oem_version, h.radar_model, h.radar_serial, getdate() as date_processed"
+                    },
+                    "where": {
+                        "S": "g.game_reference not like '%-BP-%'"
+                    }
+                }
+            }
+        ]
+    },
+    "schema": {
+        "S": "games"
+    },
+    "table": {
+        "S": "metadata"
+    }
+}

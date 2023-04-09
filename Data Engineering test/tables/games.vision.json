@@ -1,0 +1,32 @@
+{
+    "query": {
+        "L": [
+            {
+                "M": {
+                    "aggregate": {
+                        "L": [
+                            {
+                                "S": "t.game_id"
+                            }
+                        ]
+                    },
+                    "from": {
+                        "S": "vision.final_pitch_data f inner join merged.measurement m on m.measurementid = f.measurementid inner join vision.live_pitch_data l on f.measurementid = l.measurementid inner join crosscheck.tags t on f.measurementid = t.measurement_id"
+                    },
+                    "group_by": {
+                        "S": "t.game_id"
+                    },
+                    "select": {
+                        "S": "distinct t.game_id, SUM(CASE WHEN l.releasedata_releasespeed > 0 AND m.pitchsegment_launchdata_releasespeed_value > 0 THEN 1 ELSE 0 END) AS vision_valid_pitches, AVG(l.visionconfidencelevel) AS vision_confidence_level_live_avg, SUM(l.visionconfidencelevel) AS vision_confidence_level_live_sum, AVG(f.finalpitchdata_visionconfidencelevel) AS vision_confidence_level_final_avg, SUM(f.finalpitchdata_visionconfidencelevel) AS vision_confidence_level_final_sum, AVG(l.visionconfidencelevel - f.finalpitchdata_visionconfidencelevel) AS vision_confidence_level_livefinal_delta_avg, SUM(l.visionconfidencelevel - f.finalpitchdata_visionconfidencelevel) AS vision_confidence_level_livefinal_delta_sum, 2.23694*AVG(l.releasedata_releasespeed - m.pitchsegment_launchdata_releasespeed_value) AS relspeed_vision_livefinal_delta_avg, 2.23694*SUM(l.releasedata_releasespeed - m.pitchsegment_launchdata_releasespeed_value) AS relspeed_vision_livefinal_delta_sum, 39.3701*AVG(l.trajectorydata_scoringheight - m.pitchsegment_balltrajectory_scoringheight_value) AS plh_vision_livefinal_delta_avg, 39.3701*SUM(l.trajectorydata_scoringheight - m.pitchsegment_balltrajectory_scoringheight_value) AS plh_vision_livefinal_delta_sum, 39.3701*AVG(l.trajectorydata_scoringside - m.pitchsegment_balltrajectory_scoringside_value) AS pls_vision_livefinal_delta_avg, 39.3701*SUM(l.trajectorydata_scoringside - m.pitchsegment_balltrajectory_scoringside_value) AS pls_vision_livefinal_delta_sum, count(f.diagnostics_mergeresidualstdy), count(f.diagnostics_mergeresidualstdz), SUM(CASE WHEN f.diagnostics_mergeresidualstdy < 20.31998902 THEN 1 ELSE 0 END), SUM(CASE WHEN f.diagnostics_mergeresidualstdy BETWEEN 20.31998902 AND 30.47998354 THEN 1 ELSE 0 END), SUM(CASE WHEN f.diagnostics_mergeresidualstdy > 30.47998354 THEN 1 ELSE 0 END), SUM(CASE WHEN f.diagnostics_mergeresidualstdz < 20.31998902 THEN 1 ELSE 0 END), SUM(CASE WHEN f.diagnostics_mergeresidualstdz BETWEEN 20.31998902 AND 30.47998354 THEN 1 ELSE 0 END), SUM(CASE WHEN f.diagnostics_mergeresidualstdz > 30.47998354 THEN 1 ELSE 0 END), count(f.diagnostics_fd_timesinceadjustment) as timesinceadj_valid_pitches, SUM(CASE WHEN f.diagnostics_fd_timesinceadjustment > 1800 THEN 1 ELSE 0 END) AS last_autorecal_30min, count(f.diagnostics_fd_adjustmentslasthour) as adjlasthour_valid_pitches, SUM(CASE WHEN f.diagnostics_fd_adjustmentslasthour < 7 THEN 1 ELSE 0 END) AS autorecal_7_count, count(f.diagnostics_fd_tiltiqr) as vision_autorecal_valid_pitches, 0.0393701*AVG(ABS(f.diagnostics_fd_tiltiqr)) AS tilt_iqr_avg, 0.0393701*SUM(ABS(f.diagnostics_fd_tiltiqr)) AS tilt_iqr_sum, 0.0393701*AVG(ABS(f.diagnostics_fd_paniqr)) AS pan_iqr_avg, 0.0393701*SUM(ABS(f.diagnostics_fd_paniqr)) AS pan_iqr_sum, 0.0393701*AVG(ABS(f.diagnostics_baselinedeltapan)) AS baseline_delta_pan_avg, 0.0393701*SUM(ABS(f.diagnostics_baselinedeltapan)) AS baseline_delta_pan_sum, 0.0393701*AVG(ABS(f.diagnostics_baselinedeltatilt)) AS baseline_delta_tilt_avg, 0.0393701*SUM(ABS(f.diagnostics_baselinedeltatilt)) AS baseline_delta_tilt_sum, 0.0393701*AVG(ABS(f.diagnostics_fd_tiltjump)) AS tilt_jump_avg, 0.0393701*SUM(ABS(f.diagnostics_fd_tiltjump)) AS tilt_jump_sum, 0.0393701*AVG(ABS(f.diagnostics_fd_panjump)) AS pan_jump_avg, 0.0393701*SUM(ABS(f.diagnostics_fd_panjump)) AS pan_jump_sum, getdate() as date_processed"
+                    }
+                }
+            }
+        ]
+    },
+    "schema": {
+        "S": "games"
+    },
+    "table": {
+        "S": "vision"
+    }
+}

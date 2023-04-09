@@ -1,0 +1,28 @@
+{
+    "query": {
+        "L": [
+            {
+                "M": {
+                    "from": {
+                        "S": "lineup.schedule s left join games.metadata g on s.game_id = g.game_id left join report.exp_access_rules a on a.level = coalesce(a.level, s.level_name) and s.location_id = coalesce(a.location, s.location_id) and cast(left(s.local_time_string,4) as integer)=coalesce(a.season, cast(left(s.local_time_string,4) as integer)) and s.home_team_id = coalesce(a.team, s.home_team_id)"
+                    },
+                    "group_by": {
+                        "S": "a.org, s.game_id, g.game_reference, s.location_id, s.level_name, s.local_time_string, a.exception, a.access_start, a.access_end, s.game_state, s.home_team_name"
+                    },
+                    "select": {
+                        "S": "distinct concat(a.org, s.game_id) as orggame, a.org, s.game_id, s.location_id, s.level_name, s.local_time_string, g.game_reference, a.access_start, a.access_end, a.exception, s.game_state, s.home_team_name, getdate() as date_processed"
+                    },
+                    "where": {
+                        "S": "a.season = 2019 and s.local_time_string like '2019%' and (s.local_time_string > a.access_start or a.access_start is null) and (s.local_time_string < a.access_end or a.access_end is null) and a.exception = false and s.level_name <> 'MLB'"
+                    }
+                }
+            }
+        ]
+    },
+    "schema": {
+        "S": "report"
+    },
+    "table": {
+        "S": "scheduled_no_exceptions"
+    }
+}

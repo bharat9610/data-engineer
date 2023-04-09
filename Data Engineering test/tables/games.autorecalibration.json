@@ -1,0 +1,35 @@
+{
+    "query": {
+        "L": [
+            {
+                "M": {
+                    "aggregate": {
+                        "L": [
+                            {
+                                "S": "g.game_id"
+                            },
+                            {
+                                "S": "c.game_id"
+                            }
+                        ]
+                    },
+                    "from": {
+                        "S": "crosscheck.calibrations c inner join crosscheck.games g on g.game_id = c.game_id left join crosscheck.calibration_maintenance cm on cm.new_calibration_id = c.calibration_id"
+                    },
+                    "group_by": {
+                        "S": "g.game_id, g.first_pitch, g.last_pitch, g.location_id"
+                    },
+                    "select": {
+                        "S": "distinct g.game_id, count(cm.strike_zone_change_x) as strike_zone_change_count, count(cm.strike_zone_change_x_delta) as strike_zone_change_delta_count, FLOOR((DATEDIFF(minutes, DATEADD(minute, -10, g.first_pitch), g.last_pitch)/(CASE WHEN g.location_id IN ('snake', 'badger') THEN 5 ELSE 10 END))) AS expected_recal_count, COUNT(DISTINCT(CASE WHEN c.calibration_class = 'AutoRecalibration' THEN c.calibration_id ELSE NULL END)) AS actual_recal_count, COUNT(DISTINCT(CASE WHEN c.calibration_class = 'AutoRecalibration' THEN c.reference_image ELSE NULL END)) AS actual_recal_pan_count, MIN(cm.strike_zone_change_y) as min_strike_zone_change_y, MAX(cm.strike_zone_change_y) as max_strike_zone_change_y, AVG(cm.strike_zone_change_y) as avg_delta_to_baseline_y, MIN(cm.strike_zone_change_x) as min_strike_zone_change_x, MAX(cm.strike_zone_change_x) as max_strike_zone_change_x, AVG(cm.strike_zone_change_x) as avg_delta_to_baseline_x, getdate() as date_processed"
+                    }
+                }
+            }
+        ]
+    },
+    "schema": {
+        "S": "games"
+    },
+    "table": {
+        "S": "autorecalibration"
+    }
+}

@@ -1,0 +1,25 @@
+{
+    "query": {
+        "L": [
+            {
+                "M": {
+                    "from": {
+                        "S": " broadcast.access_rules a full outer join broadcast.priority_lists p on a.season = p.season and (a.org = p.priority or a.org = p.org)"
+                    },
+                    "select": {
+                        "S": "case when len(a.org) = 1 then p.org else a.org end as org, a.location, a.location_name, a.level, a.season, a.access_start, a.access_end, a.team, a.team_name, a.away, a.verified, a.exception, getdate() as date_processed"
+                    },
+                    "where": {
+                        "S": "a.season = 2019"
+                    }
+                }
+            }
+        ]
+    },
+    "schema": {
+        "S": "report"
+    },
+    "table": {
+        "S": "exp_access_rules"
+    }
+}
